@@ -33,4 +33,4 @@ jobs:
       - name: Build, Unit and Integration tests
         run: |
             chmod +x mvnw
-            ./mvnw install
+            ./mvnw install -Dspring.profiles.active=testdata
