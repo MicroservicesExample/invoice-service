@@ -57,6 +57,12 @@
 	      <artifactId>spring-boot-starter-data-jdbc</artifactId>
 	    </dependency>
 	    
+	    <!--Database version control using flyway-->
+	    <dependency>
+	      <groupId>org.flywaydb</groupId>
+	      <artifactId>flyway-core</artifactId>
+	    </dependency>
+	    
 	    <!-- testdata profile for local testing -->
 	    <dependency>
 	      <groupId>com.h2database</groupId>

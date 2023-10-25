@@ -1,5 +1,6 @@
 package org.ashok.invoiceservice.demo;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import org.ashok.invoiceservice.domain.Invoice;
@@ -29,11 +30,13 @@ public class TestDataLoader {
 	@EventListener(ApplicationReadyEvent.class)
 	void loadTestData() {
 		
-		repository.deleteAll(); 		
+		repository.deleteAll(); 
 		
-		var invoice1 = Invoice.of("test@gmail.com", "url.pdf", 6500, "jan");
-		var invoice2 = Invoice.of("test@gmail.com", "url.pdf", 6500, "feb");
-		var invoice3 = Invoice.of("test@gmail.com", "url.pdf", 6500, "mar");
+		var dueDate = LocalDate.now().plusMonths(1);
+		
+		var invoice1 = Invoice.of("test@gmail.com", "url.pdf", 6500, "jan",dueDate);
+		var invoice2 = Invoice.of("test@gmail.com", "url.pdf", 6500, "feb",dueDate);
+		var invoice3 = Invoice.of("test@gmail.com", "url.pdf", 6500, "mar",dueDate);
 		
 		repository.saveAll(List.of(invoice1, invoice2, invoice3));
 	}

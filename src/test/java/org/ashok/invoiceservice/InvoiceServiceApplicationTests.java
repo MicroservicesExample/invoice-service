@@ -2,6 +2,8 @@ package org.ashok.invoiceservice;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.time.LocalDate;
+
 import org.ashok.invoiceservice.domain.Invoice;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +27,7 @@ class InvoiceServiceApplicationTests {
 	@Test
 	void whenGetRequestThenInvoiceReturned() {
 		
-		var expectedInvoice = Invoice.of("test@gmail.com", "url.pdf", 6500, "jan");
+		var expectedInvoice = Invoice.of("test@gmail.com", "url.pdf", 6500, "jan",LocalDate.now().plusMonths(1));
 		webTestClient
 			.get()
 			.uri("/invoices?email=test@gmail.com&month=jan")
@@ -36,6 +38,8 @@ class InvoiceServiceApplicationTests {
 				assertThat(actualInvoice).isNotNull();
 				assertThat(actualInvoice.month()
 						.equals(expectedInvoice.month()));
+				assertThat(actualInvoice.dueDate())
+						.isEqualTo(expectedInvoice.dueDate());
 			});
 			
 		

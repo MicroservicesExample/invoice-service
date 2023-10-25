@@ -1,6 +1,7 @@
 package org.ashok.invoiceservice.domain;
 
 import java.time.Instant;
+import java.time.LocalDate;
 
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
@@ -36,6 +37,9 @@ public record Invoice(
 		@Column("IN_MONTH")
 		String month,
 		
+		@NotBlank(message= "Due date should be defined")
+		LocalDate dueDate,
+		
 		@Version // concurreny handling
 		int version,
 		
@@ -45,8 +49,8 @@ public record Invoice(
 		@LastModifiedDate
 		Instant lastModifiedDate) 
 	{
-			public static Invoice of(String userId, String pdfUrl, int amount, String month) {
-				return new Invoice(null, userId, pdfUrl, amount, month, 0, null, null);
+			public static Invoice of(String userId, String pdfUrl, int amount, String month, LocalDate dueDate) {
+				return new Invoice(null, userId, pdfUrl, amount, month, dueDate, 0, null, null);
 			}
 	
 	}

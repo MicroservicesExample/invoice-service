@@ -1,4 +1,4 @@
-CREATE TABLE if not exists invoice(
+CREATE TABLE invoice(
 	id		BIGSERIAL PRIMARY KEY NOT NULL,
 	user_id varchar(255) NOT NULL,
 	pdf_url varchar(500) NOT NULL,

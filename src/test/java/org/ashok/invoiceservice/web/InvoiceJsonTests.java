@@ -3,6 +3,8 @@ package org.ashok.invoiceservice.web;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.IOException;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 import org.ashok.invoiceservice.domain.Invoice;
 import org.junit.jupiter.api.Test;
@@ -25,7 +27,7 @@ public class InvoiceJsonTests {
 	
 	@Test
 	void testSerialize() throws IOException {
-		var invoice = Invoice.of("test@gmail.com", "url.pdf", 5000, "jan" );
+		var invoice = Invoice.of("test@gmail.com", "url.pdf", 5000, "jan",LocalDate.now().plusMonths(1) );
 		var jsonContent = json.write(invoice);
 		
 				
@@ -37,6 +39,8 @@ public class InvoiceJsonTests {
 					.isEqualTo(invoice.amount());
 		assertThat(jsonContent).extractingJsonPathStringValue("@.month")
 					.isEqualTo(invoice.month());
+		assertThat(jsonContent).extractingJsonPathStringValue("@.dueDate")
+					.isEqualTo(invoice.dueDate().toString());
 		assertThat(jsonContent).extractingJsonPathNumberValue("@.version")
 					.isEqualTo(0);
 		assertThat(jsonContent).extractingJsonPathValue("@.created_date")
@@ -56,6 +60,7 @@ public class InvoiceJsonTests {
 			    "pdfUrl": "url.pdf",
 			    "amount": 6500,
 			    "month": "jan",
+			    "dueDate": "2030-01-01",
 			    "created_date": null,
 			    "last_modified_date": null
 			}
@@ -63,7 +68,7 @@ public class InvoiceJsonTests {
 		
 		assertThat(json.parse(content))
 			.usingRecursiveComparison()
-			.isEqualTo(Invoice.of("test@gmail.com", "url.pdf", 6500, "jan"));
+			.isEqualTo(Invoice.of("test@gmail.com", "url.pdf", 6500, "jan", LocalDate.parse("2030-01-01", DateTimeFormatter.ISO_LOCAL_DATE)));
 	}
 
 }

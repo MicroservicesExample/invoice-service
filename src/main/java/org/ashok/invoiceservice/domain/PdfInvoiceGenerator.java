@@ -36,7 +36,7 @@ public class PdfInvoiceGenerator implements InvoiceGenerator {
 	@Override
 	public Invoice generate(String userId, String month) {
 
-		Invoice invoice = Invoice.of(userId, month+".pdf", 6500, month);
+		Invoice invoice = Invoice.of(userId, month+".pdf", 6500, month, LocalDate.now().plusMonths(1));
 			
 		String html = templateEngine.process("invoiceTemplate.html", getInvoiceContext(userId, month));
 		String xhtml = html2xhtml(html);
