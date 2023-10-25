@@ -1,8 +1,52 @@
 package org.ashok.invoiceservice.domain;
 
+import java.time.Instant;
+
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.annotation.Version;
+import org.springframework.data.relational.core.mapping.Column;
+
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Positive;
+
 public record Invoice(		
+		
+		@Id
 		Long id,
+		
+				
+		@NotBlank(message="user id must be defined")
+		@Email(message="must be valid email address")
 		String userId,
+		
+		@NotBlank(message="url must be defined")
 		String pdfUrl,
+		
+		@NotNull(message="Invoice amount must be defined")
+		@Positive(message="Invoice amount should be positive")
 		Integer amount,
-		String month) {}
+		
+		@NotBlank(message = "month should be defined")
+		@Pattern(regexp = "jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec|all")
+		@Column("IN_MONTH")
+		String month,
+		
+		@Version // concurreny handling
+		int version,
+		
+		@CreatedDate
+		Instant createdDate,
+		
+		@LastModifiedDate
+		Instant lastModifiedDate) 
+	{
+			public static Invoice of(String userId, String pdfUrl, int amount, String month) {
+				return new Invoice(null, userId, pdfUrl, amount, month, 0, null, null);
+			}
+	
+	}

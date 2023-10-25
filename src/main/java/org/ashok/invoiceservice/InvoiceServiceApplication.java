@@ -1,9 +1,13 @@
 package org.ashok.invoiceservice;
 
+import javax.sql.DataSource;
+
+import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -14,6 +18,14 @@ public class InvoiceServiceApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(InvoiceServiceApplication.class, args);
 	}
+	
+	
+	/*
+	 * @Bean ApplicationRunner dsRunner(DataSource ds) { return args -> {
+	 * System.out.println("Current ds in application :" + ds.getConnection()); }; }
+	 */
+	 
+
 
 }
 
@@ -32,6 +44,7 @@ class MyProperties {
 	}
 	
 }
+
 
 
 @RestController

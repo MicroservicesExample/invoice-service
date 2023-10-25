@@ -1,7 +1,9 @@
 package org.ashok.invoiceservice.demo;
 
+import java.util.List;
+
 import org.ashok.invoiceservice.domain.Invoice;
-import org.ashok.invoiceservice.domain.InvoiceRepository;
+import org.ashok.invoiceservice.persistence.InvoiceRepository;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.annotation.Profile;
 import org.springframework.context.event.EventListener;
@@ -26,8 +28,13 @@ public class TestDataLoader {
 	
 	@EventListener(ApplicationReadyEvent.class)
 	void loadTestData() {
-		 repository.save(new Invoice(1679231595571L, "test@gmail.com", null, 6500, "jan"));
-		 repository.save(new Invoice(1679231595571L, "test@gmail.com", null, 6500, "feb"));
-		 repository.save(new Invoice(1679231595571L, "test@gmail.com", null, 6500, "mar"));
+		
+		repository.deleteAll(); 		
+		
+		var invoice1 = Invoice.of("test@gmail.com", "url.pdf", 6500, "jan");
+		var invoice2 = Invoice.of("test@gmail.com", "url.pdf", 6500, "feb");
+		var invoice3 = Invoice.of("test@gmail.com", "url.pdf", 6500, "mar");
+		
+		repository.saveAll(List.of(invoice1, invoice2, invoice3));
 	}
 }

@@ -6,6 +6,7 @@ import org.ashok.invoiceservice.domain.Invoice;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.reactive.server.WebTestClient;
 
 
@@ -15,6 +16,7 @@ import org.springframework.test.web.reactive.server.WebTestClient;
  *
  */
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@ActiveProfiles("testdata")
 class InvoiceServiceApplicationTests {
 
 	@Autowired
@@ -23,7 +25,7 @@ class InvoiceServiceApplicationTests {
 	@Test
 	void whenGetRequestThenInvoiceReturned() {
 		
-		var expectedInvoice = new Invoice(1679231595571L, "test@gmail.com", null, 6500, "jan");
+		var expectedInvoice = Invoice.of("test@gmail.com", "url.pdf", 6500, "jan");
 		webTestClient
 			.get()
 			.uri("/invoices?email=test@gmail.com&month=jan")
@@ -32,8 +34,8 @@ class InvoiceServiceApplicationTests {
 			.expectBodyList(Invoice.class).value(invoiceList -> {
 				var actualInvoice = invoiceList.get(0);
 				assertThat(actualInvoice).isNotNull();
-				assertThat(actualInvoice.id()
-						.equals(expectedInvoice.id()));
+				assertThat(actualInvoice.month()
+						.equals(expectedInvoice.month()));
 			});
 			
 		

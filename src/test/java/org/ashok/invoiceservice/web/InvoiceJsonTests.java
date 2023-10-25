@@ -25,18 +25,24 @@ public class InvoiceJsonTests {
 	
 	@Test
 	void testSerialize() throws IOException {
-		var invoice = new Invoice(1234567890L,"test@gmail.com", null, 5000, "jan" );
+		var invoice = Invoice.of("test@gmail.com", "url.pdf", 5000, "jan" );
 		var jsonContent = json.write(invoice);
 		
 				
 		assertThat(jsonContent).extractingJsonPathNumberValue("@.id")
-					.isEqualTo(invoice.id().intValue());
+					.isNull();
 		assertThat(jsonContent).extractingJsonPathStringValue("@.userId")
 					.isEqualTo(invoice.userId());
 		assertThat(jsonContent).extractingJsonPathNumberValue("@.amount")
 					.isEqualTo(invoice.amount());
 		assertThat(jsonContent).extractingJsonPathStringValue("@.month")
 					.isEqualTo(invoice.month());
+		assertThat(jsonContent).extractingJsonPathNumberValue("@.version")
+					.isEqualTo(0);
+		assertThat(jsonContent).extractingJsonPathValue("@.created_date")
+					.isNull();
+		assertThat(jsonContent).extractingJsonPathValue("@.last_modified_date")
+					.isNull();
 		
 	}
 	
@@ -44,17 +50,20 @@ public class InvoiceJsonTests {
 	void testDeserialize() throws IOException {
 		var content = """
 			{
-			    "id": 1679231595571,
+			    "id": null,
+			    "version":0,
 			    "userId": "test@gmail.com",
-			    "pdfUrl": null,
+			    "pdfUrl": "url.pdf",
 			    "amount": 6500,
-			    "month": "jan"
+			    "month": "jan",
+			    "created_date": null,
+			    "last_modified_date": null
 			}
 				""";
 		
 		assertThat(json.parse(content))
 			.usingRecursiveComparison()
-			.isEqualTo(new Invoice(1679231595571L, "test@gmail.com", null, 6500, "jan"));
+			.isEqualTo(Invoice.of("test@gmail.com", "url.pdf", 6500, "jan"));
 	}
 
 }

@@ -50,12 +50,57 @@
 	      <groupId>org.springframework.boot</groupId>
 	      <artifactId>spring-boot-starter-actuator</artifactId>
 	    </dependency>
+	    
+	    <!-- persistence -->
+	    <dependency>
+	      <groupId>org.springframework.boot</groupId>
+	      <artifactId>spring-boot-starter-data-jdbc</artifactId>
+	    </dependency>
+	    
+	    <!-- testdata profile for local testing -->
+	    <dependency>
+	      <groupId>com.h2database</groupId>
+	      <artifactId>h2</artifactId>
+	      <scope>runtime</scope>
+	    </dependency>
+	   
+	   <!-- production use case (default profile) -->
+	    <dependency>
+	      <groupId>org.postgresql</groupId>
+	      <artifactId>postgresql</artifactId>
+	      <scope>runtime</scope>
+	    </dependency>
+	    
+	    <!-- for template engine to convert html invoice template to pdf -->
+	    
+	    <dependency>
+	      <groupId>org.springframework.boot</groupId>
+	      <artifactId>spring-boot-starter-thymeleaf</artifactId>
+	    </dependency>
+	    
+	    <!-- uncurated dependencies -->
+		
+		<!-- xtml to pdf converter -->
+		<dependency>
+		    <groupId>org.xhtmlrenderer</groupId>
+		    <artifactId>flying-saucer-pdf</artifactId>
+		    <version>9.1.22</version>
+		</dependency>
+		
+		<!-- html to xhtml converter-->	
+		<dependency>
+            <groupId>org.jsoup</groupId>
+            <artifactId>jsoup</artifactId>
+            <version>1.13.1</version>
+        </dependency>
 
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
+		
+		
 	</dependencies>
 	<dependencyManagement>
 	    <dependencies>
