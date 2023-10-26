@@ -30,7 +30,7 @@ public class InvoiceRepositoryJdbcTests {
 		var invoice = Invoice.of("testuser@test.com", "test.pdf", 500, "dec", LocalDate.now().plusMonths(1));
 		jdbcAggregateTemplate.insert(invoice);
 		
-		var resultInvoice = repository.findByUserIdAndMonth("testuser@test.com", "dec");
+		var resultInvoice = repository.findByUserIdAndForMonth("testuser@test.com", "dec");
 		assertThat(resultInvoice).isPresent();
 		assertThat(resultInvoice.get().userId())
 			.isEqualTo(invoice.userId());

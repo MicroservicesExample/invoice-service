@@ -37,8 +37,8 @@ public class InvoiceJsonTests {
 					.isEqualTo(invoice.userId());
 		assertThat(jsonContent).extractingJsonPathNumberValue("@.amount")
 					.isEqualTo(invoice.amount());
-		assertThat(jsonContent).extractingJsonPathStringValue("@.month")
-					.isEqualTo(invoice.month());
+		assertThat(jsonContent).extractingJsonPathStringValue("@.forMonth")
+					.isEqualTo(invoice.forMonth());
 		assertThat(jsonContent).extractingJsonPathStringValue("@.dueDate")
 					.isEqualTo(invoice.dueDate().toString());
 		assertThat(jsonContent).extractingJsonPathNumberValue("@.version")
@@ -59,7 +59,7 @@ public class InvoiceJsonTests {
 			    "userId": "test@gmail.com",
 			    "pdfUrl": "url.pdf",
 			    "amount": 6500,
-			    "month": "jan",
+			    "forMonth": "jan",
 			    "dueDate": "2030-01-01",
 			    "created_date": null,
 			    "last_modified_date": null

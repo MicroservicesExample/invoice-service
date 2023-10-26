@@ -24,7 +24,7 @@ public class InvoiceService {
 			return repository.findByUserId(userMonth.userId());
 		}
 		
-		var invoice = repository.findByUserIdAndMonth(userMonth.userId(), userMonth.month());
+		var invoice = repository.findByUserIdAndForMonth(userMonth.userId(), userMonth.month());
 		if(invoice.isEmpty()) {
 			Invoice generatedInvoice = invoiceGenerator.generate(userMonth.userId(), userMonth.month());
     		repository.save(generatedInvoice);

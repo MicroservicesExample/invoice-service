@@ -9,7 +9,7 @@ import org.springframework.data.repository.CrudRepository;
 
 public interface InvoiceRepository extends CrudRepository<Invoice, Long>{
 	
-	Optional<Invoice> findByUserIdAndMonth(String userId, String month);
+	Optional<Invoice> findByUserIdAndForMonth(String userId, String month);
 	List<Invoice> findByUserId(String userId);
 	
 }

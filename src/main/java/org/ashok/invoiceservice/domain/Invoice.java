@@ -34,8 +34,7 @@ public record Invoice(
 		
 		@NotBlank(message = "month should be defined")
 		@Pattern(regexp = "jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec|all")
-		@Column("IN_MONTH")
-		String month,
+		String forMonth,
 		
 		@NotBlank(message= "Due date should be defined")
 		LocalDate dueDate,

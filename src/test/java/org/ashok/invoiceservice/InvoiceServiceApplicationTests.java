@@ -36,8 +36,8 @@ class InvoiceServiceApplicationTests {
 			.expectBodyList(Invoice.class).value(invoiceList -> {
 				var actualInvoice = invoiceList.get(0);
 				assertThat(actualInvoice).isNotNull();
-				assertThat(actualInvoice.month()
-						.equals(expectedInvoice.month()));
+				assertThat(actualInvoice.forMonth()
+						.equals(expectedInvoice.forMonth()));
 				assertThat(actualInvoice.dueDate())
 						.isEqualTo(expectedInvoice.dueDate());
 			});

@@ -47,7 +47,7 @@ public class PdfInvoiceGenerator implements InvoiceGenerator {
 		} catch (IOException e1) {
 			throw new RuntimeException(e1);
 		}
-		try(OutputStream outputStream = new FileOutputStream(invoicePath.resolve(invoice.month()+".pdf").toFile())){
+		try(OutputStream outputStream = new FileOutputStream(invoicePath.resolve(invoice.forMonth()+".pdf").toFile())){
 
 			
 			ITextRenderer renderer = new ITextRenderer();
