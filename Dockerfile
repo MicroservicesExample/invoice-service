@@ -11,11 +11,13 @@ RUN java -Djarmode=layertools -jar invoice-service.jar extract
 #stage2
 
 FROM eclipse-temurin:17
+RUN mkdir /home/app
 RUN useradd app
+RUN chown app /home/app
 USER app
 WORKDIR workspace
 COPY --from=builder workspace/dependencies/ ./
 COPY --from=builder workspace/spring-boot-loader/ ./
 COPY --from=builder workspace/snapshot-dependencies/ ./
 COPY --from=builder workspace/application/ ./
-ENTRYPOINT ["java" "org.springframework.boot.loader.JarLauncher"]
+ENTRYPOINT ["java", "org.springframework.boot.loader.JarLauncher"]
