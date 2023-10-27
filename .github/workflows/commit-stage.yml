@@ -61,7 +61,7 @@ jobs:
       - name: Build container image
         run: |
             chmod +x mvnw
-            spring-boot:build-image \
+            ./mvnw spring-boot:build-image \
             -Dimage.name=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.VERSION }}
       - name: Container image vulnerabilty scanning
         uses: anchore/scan-action@v3
