@@ -16,6 +16,12 @@
 	<properties>
 		<java.version>17</java.version>
 		<spring-cloud.version>2022.0.4</spring-cloud.version>
+		<!-- provide these property values on the cli -->
+		<image.name>${project.name}</image.name>
+		<image.publish>false</image.publish>
+		<registry.user />
+		<registry.password />
+		<registry.url />
 	</properties>
 	<dependencies>
 		<dependency>
@@ -129,11 +135,20 @@
 				<configuration>
 					<!-- buildpacks (BP) container image configuration -->
 					<image>
-						<name>${project.name}</name>
+						<name>${image.name}</name>
+						<publish>${image.publish}</publish>
 						<env>
-							 <BP_JVM_VERSION>17</BP_JVM_VERSION>
+							 <BP_JVM_VERSION>${java.version}</BP_JVM_VERSION>
 						</env>
 					</image>
+					<!-- push /publish image to registry -->
+					<docker>
+			            <publishRegistry>
+			                <username>${registry.user}</username>
+			                <password>${registry.password}</password>
+			                <url>${registry.url}</url>
+			            </publishRegistry>
+        			</docker>
 				</configuration>
 			</plugin>
 		</plugins>
