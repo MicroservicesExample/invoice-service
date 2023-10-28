@@ -2,7 +2,7 @@ name: commit stage
 on: push
 env:
   REGISTRY: ghcr.io
-  IMAGE_NAME: mane-ashok/invoice-service
+  IMAGE_NAME: microservicesexample/invoice-service
   VERSION: latest
 
 jobs:
