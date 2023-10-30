@@ -1,5 +1,7 @@
 package org.ashok.invoiceservice.web;
 
+import java.util.Optional;
+
 import org.ashok.invoiceservice.domain.Invoice;
 import org.ashok.invoiceservice.domain.InvoiceService;
 import org.ashok.invoiceservice.domain.UserMonth;
@@ -12,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 
 @RestController
 @RequestMapping("invoices")
@@ -30,8 +33,8 @@ public class InvoiceController {
 	}
 	
 	@GetMapping("{id}")
-	public void download(@PathVariable Long id) {
-		
+	public Optional<Invoice> getById(@PathVariable @Valid @NotNull Long id) {
+		return service.findById(id);
 	}
 	
 }

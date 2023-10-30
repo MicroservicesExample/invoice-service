@@ -1,6 +1,7 @@
 package org.ashok.invoiceservice.domain;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.ashok.invoiceservice.persistence.InvoiceRepository;
 import org.springframework.stereotype.Service;
@@ -33,6 +34,11 @@ public class InvoiceService {
 		
 		return List.of(invoice.get());
 				
+	}
+	
+	public Optional<Invoice> findById(Long id) {
+		
+		return repository.findById(id);
 	}
 
 }

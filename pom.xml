@@ -76,7 +76,7 @@
 	      <scope>runtime</scope>
 	    </dependency>
 	   
-	   <!-- production use case (default profile) -->
+	   <!-- production use case (proddata profile) -->
 	    <dependency>
 	      <groupId>org.postgresql</groupId>
 	      <artifactId>postgresql</artifactId>
