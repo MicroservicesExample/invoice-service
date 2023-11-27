@@ -4,15 +4,25 @@ import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import java.time.LocalDate;
 import java.util.Collections;
+import java.util.Optional;
 
+import org.apache.catalina.security.SecurityConfig;
+import org.ashok.invoiceservice.domain.Invoice;
 import org.ashok.invoiceservice.domain.InvoiceService;
 import org.ashok.invoiceservice.domain.UserMonth;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.oauth2.jwt.JwtDecoder;
+import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
+
 
 
 /**
@@ -27,6 +37,7 @@ import org.springframework.test.web.servlet.MockMvc;
  */
 
 @WebMvcTest(controllers = {InvoiceController.class})
+@Import(SecurityConfig.class)
 public class InvoiceControllerMvcTests {
 
 	@Autowired
@@ -34,6 +45,9 @@ public class InvoiceControllerMvcTests {
 	
 	@MockBean
 	InvoiceService service;
+	
+	@MockBean
+	JwtDecoder jwtDecoder;
 	
 	@Test
 	void whenGetInvoiceNotExistingReturnsEmpty() throws Exception {
@@ -44,8 +58,45 @@ public class InvoiceControllerMvcTests {
 			.willReturn(Collections.emptyList());
 		
 		mockMvc
-			.perform(get("/invoices?email=invalid@gmail.com&month=jan"))
+			.perform(get("/invoices?email=invalid@gmail.com&month=jan")
+					
+						.with(SecurityMockMvcRequestPostProcessors.jwt()
+								.authorities(new SimpleGrantedAuthority("ROLE_user"))
+							)		
+					)
+			
 			.andExpect(status().isOk())
 			.andExpect(result -> result.getResponse().equals("[]"));
+	}
+	
+	
+	
+	@Test
+	void whenGetInvoiceByIdNotAuthenticatedThenReturns401() throws Exception {
+		
+		mockMvc
+			.perform(get("/invoices/1234"))
+			.andExpect(MockMvcResultMatchers.status().isUnauthorized());
+	}
+	
+	
+	
+	@Test
+	void whenGetInvoiceByIdExistingThenReturnsInvoice() throws Exception {
+		long id = 1234;
+		var invoice = Invoice.of("testuser@gmail.com", "test.pdf", 10, "jan", LocalDate.now());
+		
+		given(service.findById(id))
+				.willReturn(Optional.of(invoice));
+		
+		mockMvc
+			.perform(get("/invoices/1234")
+					
+					.with(SecurityMockMvcRequestPostProcessors.jwt()
+							.authorities(new SimpleGrantedAuthority("ROLE_user"))
+						)		
+				)
+			.andExpect(status().isOk())
+			.andExpect(result -> result.getResponse().equals(invoice));
 	}
 }

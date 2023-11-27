@@ -9,13 +9,17 @@ import org.ashok.invoiceservice.domain.Invoice;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.data.jdbc.DataJdbcTest;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.jdbc.core.JdbcAggregateTemplate;
 import org.springframework.test.context.ActiveProfiles;
 
 @DataJdbcTest //each test runs in a transaction and rolls it back at its end, keeping the database clean.
 @Import(DataConfig.class)
-@ActiveProfiles("testdata")
+/*Disables the default behavior of relying on an embedded test database since we want to use
+Testcontainers*/
+@AutoConfigureTestDatabase( replace = AutoConfigureTestDatabase.Replace.NONE)
+@ActiveProfiles({"integration","proddata"})
 public class InvoiceRepositoryJdbcTests {
 	
 	@Autowired
