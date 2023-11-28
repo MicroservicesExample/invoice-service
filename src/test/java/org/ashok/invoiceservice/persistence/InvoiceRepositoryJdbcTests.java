@@ -19,7 +19,7 @@ import org.springframework.test.context.ActiveProfiles;
 /*Disables the default behavior of relying on an embedded test database since we want to use
 Testcontainers*/
 @AutoConfigureTestDatabase( replace = AutoConfigureTestDatabase.Replace.NONE)
-@ActiveProfiles({"integration","proddata"})
+@ActiveProfiles({"integration","testdata"})
 public class InvoiceRepositoryJdbcTests {
 	
 	@Autowired

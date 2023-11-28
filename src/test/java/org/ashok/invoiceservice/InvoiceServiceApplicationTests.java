@@ -26,6 +26,7 @@ import org.testcontainers.utility.DockerImageName;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import java.util.Base64;
 
 
 
@@ -36,27 +37,35 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  *
  */
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@ActiveProfiles({"integration","proddata"})
+@ActiveProfiles({"integration","testdata"})
 @Testcontainers //Activates automatic startup and cleanup of test containers
 class InvoiceServiceApplicationTests {
 
 	private static final DockerImageName AUTH_SERVICE_IMAGE = DockerImageName.parse("ghcr.io/microservicesexample/auth-service:latest");
 	
 	@Container
-	private static final GenericContainer<?> authServiceContainer = new GenericContainer<>(AUTH_SERVICE_IMAGE)
+	private static final GenericContainer<?> authServiceContainer;
+	static {
+		authServiceContainer = new GenericContainer<>(AUTH_SERVICE_IMAGE)
 	    .withEnv(
 	    			Map.of(
 	    					"app.client.registration.client-id", "test",
-	    					"app.client.registration.client-secret","testsecret",
-	    					"spring.profiles.active", "testdata", //h2 db
-	    					"app.users[0].username", "testuser",
-	    					"app.users[0].password", "{noop}1234",
-	    					"app.users[0].roles[0]", "USER"
+	    					"app.client.registration.client-secret","{noop}testsecret",
+	    					"spring.profiles.active", "testdata" //h2 db
+	    					
 	     				)
 	    		)
 		.withExposedPorts(9000)
-	    .waitingFor(Wait.forHttp("/"));
-	
+	    
+		.waitingFor(Wait.forHttp("/"));
+		
+		authServiceContainer.start();
+	//	final String logs = authServiceContainer.getLogs();
+	//	System.out.println("Container logs ---------"+ logs);
+		
+
+		
+	}
 	private static AccessToken userAccessToken;
 	
 	
@@ -77,32 +86,45 @@ class InvoiceServiceApplicationTests {
 	@BeforeAll
 	static void generateAccessToken() {
 		WebClient webClient = WebClient.builder()
-								.baseUrl(getAuthServiceContainerUrl())
+								.baseUrl(getAuthServiceContainerUrl()+"/oauth2/token")
 								.defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+								//.defaultHeader("Content-Type", "application/x-www-form-urlencoded")
 								.build();
 		
-		userAccessToken = authenticateClient(webClient, "test", "testuser", "1234");
+		userAccessToken = authenticateClient(webClient, "test", "testsecret");
+		System.out.println("****userAccessToken:" + userAccessToken);
+	//	final String logs = authServiceContainer.getLogs();
+	//	System.out.println("Container logs ---------"+ logs);
 	}
 	
-	static AccessToken authenticateClient(WebClient webClient, String clientId, String username, String password) {
+	static AccessToken authenticateClient(WebClient webClient, String clientId, String clientSecret) {
 		
-		return webClient
+		AccessToken response = 
+		    webClient
 				.post()
+				.headers(httpHeaders -> setAuthorizationHeader(httpHeaders, clientId, clientSecret))
 				.body(
-						BodyInserters.fromFormData("grant_type", "password")
-								.with("client_id", clientId)
-								.with("username", username)
-								.with("password", password)
+						BodyInserters.fromFormData("grant_type", "client_credentials")
+																
 					)
 				.retrieve()
 				.bodyToMono(AccessToken.class)
 				.block();
+				
+		System.out.println("*******access token response: " + response);
+		return response;
 	}
 
 	
 	
+	private static void setAuthorizationHeader(HttpHeaders httpHeaders, String clientId, String clientSecret) {
+		String headerValue = clientId + ":" + clientSecret;
+		httpHeaders.add("Authorization", "Basic " + Base64.getEncoder().encodeToString(headerValue.getBytes()) );
+	}
+
+
 	@Test
-	void whenGetRequestThenInvoiceReturned() {
+	void whenGetRequestWithAccessTokenThenInvoiceReturned() {
 		
 		var expectedInvoice = Invoice.of("test@gmail.com", "url.pdf", 6500, "jan",LocalDate.now().plusMonths(1));
 		webTestClient
@@ -120,6 +142,17 @@ class InvoiceServiceApplicationTests {
 						.isEqualTo(expectedInvoice.dueDate());
 			});
 			
+		
+	}
+	
+		@Test
+	void whenGetRequestWithoutAccessTokenThen401() {
+		
+		webTestClient
+			.get()
+			.uri("/invoices?email=test@gmail.com&month=jan")
+			.exchange()
+			.expectStatus().isUnauthorized();
 		
 	}
 	
