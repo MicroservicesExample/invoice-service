@@ -3,6 +3,7 @@ package org.ashok.invoiceservice;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.time.LocalDate;
+import java.util.Base64;
 import java.util.Map;
 
 import org.ashok.invoiceservice.domain.Invoice;
@@ -12,13 +13,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.testcontainers.containers.GenericContainer;
+import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.containers.wait.strategy.Wait;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
@@ -26,7 +27,6 @@ import org.testcontainers.utility.DockerImageName;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import java.util.Base64;
 
 
 
@@ -37,11 +37,18 @@ import java.util.Base64;
  *
  */
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@ActiveProfiles({"integration","testdata"})
 @Testcontainers //Activates automatic startup and cleanup of test containers
 class InvoiceServiceApplicationTests {
 
 	private static final DockerImageName AUTH_SERVICE_IMAGE = DockerImageName.parse("ghcr.io/microservicesexample/auth-service:latest");
+	
+	@Container
+	 private static final PostgreSQLContainer<?> postgreSQLContainer = new PostgreSQLContainer<>("postgres:14.4")
+	   .withDatabaseName("invoiceService").withUsername("postgres").withPassword("postgres");
+	 
+	static {
+		postgreSQLContainer.start();
+	}
 	
 	@Container
 	private static final GenericContainer<?> authServiceContainer;
@@ -74,6 +81,11 @@ class InvoiceServiceApplicationTests {
 			
 	@DynamicPropertySource
 	static void dynamicProperties(DynamicPropertyRegistry registry) {
+		registry.add("spring.datasource.url", postgreSQLContainer::getJdbcUrl);
+		registry.add("spring.datasource.username", postgreSQLContainer::getUsername);
+		registry.add("spring.datasource.password", postgreSQLContainer::getPassword);
+		
+		
 		registry.add("spring.security.oauth2.resourceserver.jwt.issuer-uri",
 						() -> getAuthServiceContainerUrl());
 	}
