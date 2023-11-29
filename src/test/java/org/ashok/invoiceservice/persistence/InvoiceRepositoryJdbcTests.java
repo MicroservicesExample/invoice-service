@@ -42,6 +42,7 @@ public class InvoiceRepositoryJdbcTests {
 	
 	@DynamicPropertySource
 	static void dynamicProperties(DynamicPropertyRegistry registry) {
+		registry.add("spring.datasource.driver-class-name",() -> "org.postgresql.Driver");
 		registry.add("spring.datasource.url", postgreSQLContainer::getJdbcUrl);
 		registry.add("spring.datasource.username", postgreSQLContainer::getUsername);
 		registry.add("spring.datasource.password", postgreSQLContainer::getPassword);
