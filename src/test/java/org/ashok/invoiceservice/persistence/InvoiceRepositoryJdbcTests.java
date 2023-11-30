@@ -12,6 +12,7 @@ import org.springframework.boot.test.autoconfigure.data.jdbc.DataJdbcTest;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.jdbc.core.JdbcAggregateTemplate;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.testcontainers.containers.PostgreSQLContainer;
@@ -61,5 +62,48 @@ public class InvoiceRepositoryJdbcTests {
 			.isEqualTo(invoice.userId());
 		assertThat(resultInvoice.get().dueDate())
 			.isEqualTo(invoice.dueDate());
+		assertThat(resultInvoice.get().createdDate())
+			.isNotNull();
+	}
+	
+	@Test
+	void whenCreatedInvoiceNotAuthenticatedThenNoUserAuditData() {
+		
+		var invoice = Invoice.of("testuser@test.com", "test.pdf", 500, "jan", LocalDate.now().plusMonths(1));
+		jdbcAggregateTemplate.insert(invoice);
+		
+		var resultInvoice = repository.findByUserIdAndForMonth("testuser@test.com", "jan");
+		assertThat(resultInvoice).isPresent();
+		assertThat(resultInvoice.get().userId())
+			.isEqualTo(invoice.userId());
+		assertThat(resultInvoice.get().dueDate())
+			.isEqualTo(invoice.dueDate());		
+		assertThat(resultInvoice.get().createdDate())
+			.isNotNull();
+		assertThat(resultInvoice.get().createdBy())
+			.isBlank();
+		assertThat(resultInvoice.get().lastModifiedBy())
+			.isBlank();	
+	}
+	
+	@Test
+	@WithMockUser("test-user")
+	void whenCreatedInvoiceAuthenticatedThenUserAuditDataIsPresent() {
+		
+		var invoice = Invoice.of("testuser@test.com", "test.pdf", 500, "jan", LocalDate.now().plusMonths(1));
+		jdbcAggregateTemplate.insert(invoice);
+		
+		var resultInvoice = repository.findByUserIdAndForMonth("testuser@test.com", "jan");
+		assertThat(resultInvoice).isPresent();
+		assertThat(resultInvoice.get().userId())
+			.isEqualTo(invoice.userId());
+		assertThat(resultInvoice.get().dueDate())
+			.isEqualTo(invoice.dueDate());		
+		assertThat(resultInvoice.get().createdDate())
+			.isNotNull();
+		assertThat(resultInvoice.get().createdBy())
+			.isEqualTo("test-user");
+		assertThat(resultInvoice.get().lastModifiedBy())
+			.isEqualTo("test-user");	
 	}
 }

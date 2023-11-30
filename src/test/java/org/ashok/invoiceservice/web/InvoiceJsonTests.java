@@ -47,6 +47,10 @@ public class InvoiceJsonTests {
 					.isNull();
 		assertThat(jsonContent).extractingJsonPathValue("@.last_modified_date")
 					.isNull();
+		assertThat(jsonContent).extractingJsonPathValue("@.created_by")
+					.isNull();
+		assertThat(jsonContent).extractingJsonPathValue("@.last_modified_by")
+					.isNull();
 		
 	}
 	
@@ -62,7 +66,9 @@ public class InvoiceJsonTests {
 			    "forMonth": "jan",
 			    "dueDate": "2030-01-01",
 			    "created_date": null,
-			    "last_modified_date": null
+			    "last_modified_date": null,
+			    "created_by": null,
+			    "last_modified_by": null
 			}
 				""";
 		

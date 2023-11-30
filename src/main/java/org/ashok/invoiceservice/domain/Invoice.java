@@ -3,8 +3,10 @@ package org.ashok.invoiceservice.domain;
 import java.time.Instant;
 import java.time.LocalDate;
 
+import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.annotation.Version;
 
@@ -41,6 +43,12 @@ public record Invoice(
 		@Version // concurreny handling
 		int version,
 		
+		@CreatedBy
+		String createdBy,
+		
+		@LastModifiedBy
+		String lastModifiedBy,
+		
 		@CreatedDate
 		Instant createdDate,
 		
@@ -48,7 +56,7 @@ public record Invoice(
 		Instant lastModifiedDate) 
 	{
 			public static Invoice of(String userId, String pdfUrl, int amount, String month, LocalDate dueDate) {
-				return new Invoice(null, userId, pdfUrl, amount, month, dueDate, 0, null, null);
+				return new Invoice(null, userId, pdfUrl, amount, month, dueDate, 0, null, null, null, null);
 			}
 	
 	}
