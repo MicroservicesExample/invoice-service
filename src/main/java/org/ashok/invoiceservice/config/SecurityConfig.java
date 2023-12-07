@@ -30,6 +30,7 @@ public class SecurityConfig {
 	
 	/**
 	 * Custom strategy to extract role information from jwt access token and build GrantedAuthority object
+	 * @see hasAnyRole(...) customization in filterChain method above. The converter makes it available from Jwt.
 	 * @return
 	 */
 	@Bean
