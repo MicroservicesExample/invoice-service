@@ -2,6 +2,7 @@ package org.ashok.invoiceservice;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.time.Duration;
 import java.time.LocalDate;
 import java.util.Base64;
 import java.util.Map;
@@ -20,6 +21,7 @@ import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.PostgreSQLContainer;
+import org.testcontainers.containers.startupcheck.MinimumDurationRunningStartupCheckStrategy;
 import org.testcontainers.containers.wait.strategy.Wait;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
@@ -63,6 +65,9 @@ class InvoiceServiceApplicationTests {
 	     				)
 	    		)
 		.withExposedPorts(9000)
+		.withStartupCheckStrategy(
+					new MinimumDurationRunningStartupCheckStrategy(Duration.ofSeconds(5))
+				)
 	    
 		.waitingFor(Wait.forHttp("/"));
 		
