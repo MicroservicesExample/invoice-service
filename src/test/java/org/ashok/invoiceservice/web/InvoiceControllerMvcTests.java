@@ -61,7 +61,7 @@ public class InvoiceControllerMvcTests {
 			.perform(get("/invoices?email=invalid@gmail.com&month=jan")
 					
 						.with(SecurityMockMvcRequestPostProcessors.jwt()
-								.authorities(new SimpleGrantedAuthority("ROLE_user"))
+								.authorities(new SimpleGrantedAuthority("ROLE_USER"))
 							)		
 					)
 			
@@ -93,7 +93,7 @@ public class InvoiceControllerMvcTests {
 			.perform(get("/invoices/1234")
 					
 					.with(SecurityMockMvcRequestPostProcessors.jwt()
-							.authorities(new SimpleGrantedAuthority("ROLE_user"))
+							.authorities(new SimpleGrantedAuthority("ROLE_USER"))
 						)		
 				)
 			.andExpect(status().isOk())
