@@ -8,7 +8,7 @@ import java.time.LocalDate;
 import java.util.Collections;
 import java.util.Optional;
 
-import org.apache.catalina.security.SecurityConfig;
+import org.ashok.invoiceservice.config.SecurityConfig;
 import org.ashok.invoiceservice.domain.Invoice;
 import org.ashok.invoiceservice.domain.InvoiceService;
 import org.ashok.invoiceservice.domain.UserMonth;
