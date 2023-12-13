@@ -29,6 +29,12 @@ spec:
             - name: BPL_JVM_THREAD_COUNT
               value: "50"
             - name: SPRING_DATASOURCE_URL
-              value: jdbc:postgresql://my-postgres:5432/invoiceService
+              value: jdbc:postgresql://my-postgres:5432/invoiceservice
+            - name: SPRING_CLOUD_CONFIG_URI
+              value: http://config-service
+            - name: OAUTH2_SERVICE_JWT_ISSUER-URI
+              value: http://auth-service
             - name: SPRING_PROFILES_ACTIVE
               value: proddata
+            - name: LOGGING_LEVEL_ORG_SPRINGFRAMEWORK
+              value: debug
